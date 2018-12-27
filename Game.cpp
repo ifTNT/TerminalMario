@@ -22,7 +22,7 @@ Game::Game() {
     endFlag = 0;
     score = 0;
     life = 1;
-    fb = new FBuffer(40,10);
+    fb = new FBuffer(80,20);
 }
 
 Game::~Game(){

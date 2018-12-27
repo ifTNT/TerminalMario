@@ -1,6 +1,8 @@
 #ifndef FB_H
 #define FB_H
 
+#include <string>
+using namespace std;
 class FBuffer{
     public:
         FBuffer(int,int);
@@ -17,7 +19,7 @@ class FBuffer{
     private:
         int width;
         int height;
-        char** _fb;
+        string** _fb;
 };
 
 #endif

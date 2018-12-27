@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <thread>
 #include <chrono>
-#include <mutex>
-#include <condition_variable>
 
 #ifdef __linux__ 
     #include "linuxGetchPatch.h"
@@ -16,7 +14,7 @@
 using namespace std;
 
 char Game::userKey;
-condition_variable Game::cv;
+int Game::endFlag;
 
 Game::Game(){
     userKey = '\0';
@@ -24,21 +22,33 @@ Game::Game(){
 }
 
 void Game::readUserKey(){
-    userKey = getch();
-    cv.notify_one();
+    while(endFlag==0){
+        userKey = getch();
+    }
+}
+
+char Game::getUserKey(){
+    char buf = userKey;
+    if(buf!=(char)0){
+        userKey = (char)0;
+        return buf;
+    }else{
+        return 0;
+    }
 }
 
 void Game::start(){
+    thread th(readUserKey);
     while(endFlag==0){
-        thread th(readUserKey);
-
-        mutex mtx;
-        unique_lock<mutex> lck(mtx);
-        while (cv.wait_for(lck, chrono::milliseconds(1000)) == cv_status::timeout){
-            cout << "Tick\n";
+        this_thread::sleep_for(chrono::milliseconds(100));
+        cout << "Tick\n";
+        char key = getUserKey();
+        if(key!=(char)0){
+            cout << "key " << key << " detected\n";
+            endFlag=1;
+            break;
         }
-        cout << "key " << (unsigned int)userKey << " detected\n";
-
-        th.join();
     }
+    cout << "Press any key to end the game." << endl;
+    th.join();
 }

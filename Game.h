@@ -16,14 +16,14 @@ class Game{
         void setLife(int);
         int getLife();
         void endGame();
-        char getUserKey();
+        static char getUserKey();
         void start();
     private:
         vector<Point*> objPool;
         int score;
         int life;
         static char userKey;
-        int endFlag;
+        static int endFlag;
         static condition_variable cv;
         static void readUserKey();
 

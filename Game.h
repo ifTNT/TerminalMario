@@ -2,13 +2,15 @@
 #define GAME_H
 
 #include "Point.h"
+#include "FBuffer.h"
 #include <vector>
-#include <condition_variable>
+//#include <condition_variable>
 using namespace std;
 
 class Game{
     public:
         Game();
+        ~Game();
         bool moveTo(int,int);
         bool create(int, int, int);
         void setScore(int);
@@ -24,8 +26,9 @@ class Game{
         int life;
         static char userKey;
         static int endFlag;
-        static condition_variable cv;
+        //static condition_variable cv;
         static void readUserKey();
+        FBuffer* fb;
 
 };
 

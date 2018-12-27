@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "FBuffer.h"
 #include <iostream>
 #include <stdio.h>
 #include <thread>
@@ -16,9 +17,16 @@ using namespace std;
 char Game::userKey;
 int Game::endFlag;
 
-Game::Game(){
+Game::Game() {
     userKey = '\0';
     endFlag = 0;
+    score = 0;
+    life = 1;
+    fb = new FBuffer(40,10);
+}
+
+Game::~Game(){
+    delete(fb);
 }
 
 void Game::readUserKey(){
@@ -28,26 +36,24 @@ void Game::readUserKey(){
 }
 
 char Game::getUserKey(){
-    char buf = userKey;
-    if(buf!=(char)0){
-        userKey = (char)0;
-        return buf;
-    }else{
-        return 0;
-    }
+    return userKey;
 }
 
 void Game::start(){
     thread th(readUserKey);
     while(endFlag==0){
+        int counter;
         this_thread::sleep_for(chrono::milliseconds(100));
-        cout << "Tick\n";
-        char key = getUserKey();
-        if(key!=(char)0){
-            cout << "key " << key << " detected\n";
-            endFlag=1;
-            break;
+        //======begin Tick======
+        //cout << "Tick\n";
+        fb->clear();
+        fb->setPoint(1,1,(char)('0'+(counter++)%10));
+        for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            //(*i)->update();
         }
+        if(userKey!=(char)0) userKey=0;
+        fb->flush();
+        //======End Tick========
     }
     cout << "Press any key to end the game." << endl;
     th.join();

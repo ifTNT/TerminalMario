@@ -1,14 +1,14 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <Point.h>
-#include <Vector>
+#include "Point.h"
+#include <vector>
 #include <condition_variable>
+using namespace std;
 
 class Game{
     public:
         Game();
-        ~Game();
         bool moveTo(int,int);
         bool create(int, int, int);
         void setScore(int);
@@ -19,13 +19,13 @@ class Game{
         char getUserKey();
         void start();
     private:
-        Vector<Point*> objPool;
+        vector<Point*> objPool;
         int score;
         int life;
-        char userKey;
+        static char userKey;
         int endFlag;
-        condition_variable cv;
-        void readUserKey();
+        static condition_variable cv;
+        static void readUserKey();
 
 };
 

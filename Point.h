@@ -1,14 +1,13 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include <Game.h>
+#include "Game.h"
 
+class Game;
 class Point{
     public:
         Point(int,int,Game&);
         ~Point();
-        int x;
-        int y;
         int getX();
         int getY();
         char getContent();

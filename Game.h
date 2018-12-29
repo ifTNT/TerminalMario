@@ -7,12 +7,13 @@
 //#include <condition_variable>
 using namespace std;
 
+class Point;
 class Game{
     public:
         Game();
         ~Game();
-        bool moveTo(int,int);
-        bool create(int, int, int);
+        bool moveTo(Point&,int,int);
+        template <class T> bool create(int, int);
         void setScore(int);
         int getScore();
         void setLife(int);
@@ -24,12 +25,23 @@ class Game{
         vector<Point*> objPool;
         int score;
         int life;
+        int width;
+        int height;
         static char userKey;
         static int endFlag;
         //static condition_variable cv;
         static void readUserKey();
+        bool validPosition(int,int);
         FBuffer* fb;
 
 };
+
+//Must place here to avoid linking error
+template<class T> bool Game::create(int x, int y){
+    if(!validPosition(x,y)) return false;
+    T* newObj = new T(x, y, *this);
+    objPool.push_back((Point*)newObj);
+    return true;
+}
 
 #endif

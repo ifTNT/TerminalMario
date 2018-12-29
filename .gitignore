@@ -1,3 +1,4 @@
 *.o
 .vscode/
 TerminalMario
+.gdb_history

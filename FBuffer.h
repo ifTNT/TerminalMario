@@ -10,16 +10,18 @@ class FBuffer{
         int getWidth();
         int getHeight();
         void setPoint(int, int, char);
-        void getPoint(int, int, char);
+        void setPoint(int, int, string);
+        void getPoint(int, int);
         void clearPoint(int, int);
-        void drawRect(int, int, int, int, char);
-        void drawLine(int, int, int, int, char);
+        void drawRect(int, int, int, int, string);
+        void drawLine(int, int, int, int, string);
         void flush();
         void clear();
     private:
         int width;
         int height;
-        string** _fb;
+        string*** _fb;
+        bool _inBoundary(int, int);
 };
 
 #endif

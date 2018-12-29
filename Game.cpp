@@ -2,6 +2,7 @@
 #include "FBuffer.h"
 #include "Point.h"
 #include <stdio.h>
+#include <iostream>
 #include <thread>
 #include <chrono>
 #include <string>

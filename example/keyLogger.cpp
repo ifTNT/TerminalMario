@@ -6,6 +6,7 @@ using namespace std;
 keyLogger::keyLogger(int x, int y, Game& _f):Point(x,y,_f){}
 
 void keyLogger::update(){
-    string userKey = string(1, getAPI().getUserKey());
+    string userKey = string(1, api.getUserKey());
+    if(api.getUserKey()==0) userKey.assign(" ");
     setContent(userKey);
 }

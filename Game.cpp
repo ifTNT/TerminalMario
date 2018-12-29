@@ -1,7 +1,6 @@
 #include "Game.h"
 #include "FBuffer.h"
 #include "Point.h"
-#include <iostream>
 #include <stdio.h>
 #include <thread>
 #include <chrono>
@@ -23,10 +22,10 @@ Game::Game() {
     userKey = '\0';
     endFlag = 0;
     score = 0;
-    life = 1;
+    life = 5;
     width = 80;
     height = 20;
-    fb = new FBuffer(width,height);
+    fb = new FBuffer(width+2,height+3);
 }
 
 Game::~Game(){
@@ -45,29 +44,48 @@ bool Game::validPosition(int x, int y){
     return true;
 }
 
+int Game::offsetX(int x){
+    return x+1;
+}
+int Game::offsetY(int y){
+    return y+2;
+}
+
 void Game::start(){
+    //new thread to record user key input
     thread th(readUserKey);
-    /*int counter=0;
-    int px=10, py=10;
-    float vx=0, vy=0;
-    const float g = 0.8;*/
+    
     while(endFlag==0){
         this_thread::sleep_for(chrono::milliseconds(33));
         //======begin Tick======
-        cout << "Tick\n";
         fb->clear();
-        fb->drawLine(0,19,79,19, "█");
+        //draw the scene
+        fb->drawLine(0,height+1,width+1,height+1, "█");
+        fb->drawLine(0,0,width+1,0, "█");
+        fb->drawLine(0,0,0,height+1, "█");
+        fb->drawLine(width+1,0,width+1,height+1, "█");
         //refresh
         for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            cout << *i;
             (*i)->update();
         }
         //redraw
         for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            int _x=(*i)->getX();
-            int _y=(*i)->getY();
-            fb->setPoint(_x,_y,(*i)->getContent());
+            int _x=offsetX((*i)->getX());
+            int _y=offsetY((*i)->getY());
+            if((*i)->getContent()!="") fb->setPoint(_x,_y,(*i)->getContent());
         }
+
+        //redraw life
+        for(int i=1; i<=getLife(); i++){
+            fb->setPoint(offsetX(i-1), 1, "*");
+        }
+        //redraw score
+        int _score = score;
+        for(int i=0; i<4; i++){
+            fb->setPoint(offsetX(width-1-i), 1, '0'+_score%10);
+            _score /= 10;
+        }
+
         if(userKey!=(char)0) userKey=0;
         fb->flush();
         //======End Tick========
@@ -90,3 +108,21 @@ bool Game::moveTo(Point& req, int x, int y){
 char Game::getUserKey(){
     return userKey;
 }
+void Game::setScore(int newScore){
+    if(newScore<0 || newScore>9999) return;
+    score = newScore;
+}
+int Game::getScore(){
+    return score;
+}
+void Game::setLife(int newLife){
+    if(newLife<0 || newLife>5) return;
+    life = newLife;
+}
+int Game::getLife(){
+    return life;
+}
+void Game::endGame(){
+    endFlag = true;
+}
+//====End API====

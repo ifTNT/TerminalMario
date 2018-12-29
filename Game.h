@@ -32,6 +32,8 @@ class Game{
         //static condition_variable cv;
         static void readUserKey();
         bool validPosition(int,int);
+        int offsetX(int);
+        int offsetY(int);
         FBuffer* fb;
 
 };

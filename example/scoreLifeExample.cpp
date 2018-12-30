@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-scoreLifeExample::scoreLifeExample(int x,int y, Game& _f):Point(x,y,_f){
+scoreLifeExample::scoreLifeExample(Game& _f):Point(_f){
        counter = 0;
        setContent(" ");
 }

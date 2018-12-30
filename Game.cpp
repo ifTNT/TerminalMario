@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include <string>
+#include <typeinfo>
 
 #ifdef __linux__ 
     #include "linuxGetchPatch.h"
@@ -51,6 +52,12 @@ int Game::offsetX(int x){
 int Game::offsetY(int y){
     return y+2;
 }
+int Game::getRealX(GameChar t){
+    return t.originX+t.x;
+}
+int Game::getRealY(GameChar t){
+    return t.originY+t.y;
+}
 
 void Game::start(){
     //new thread to record user key input
@@ -66,14 +73,14 @@ void Game::start(){
         fb->drawLine(0,0,0,height+1, "█");
         fb->drawLine(width+1,0,width+1,height+1, "█");
         //refresh
-        for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            (*i)->update();
+        for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            i->ref->update();
         }
         //redraw
-        for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            int _x=offsetX((*i)->getX());
-            int _y=offsetY((*i)->getY());
-            if((*i)->getContent()!="") fb->setPoint(_x,_y,(*i)->getContent());
+        for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            int _x=offsetX(getRealX(*i));
+            int _y=offsetY(getRealY(*i));
+            if(i->ref->getContent()!="") fb->setPoint(_x,_y,i->ref->getContent());
         }
 
         //redraw life
@@ -96,16 +103,28 @@ void Game::start(){
 }
 
 //====Begin API====
-bool Game::moveTo(Point& req, int x, int y){
+bool Game::moveTo(void* req, int x, int y){
     if(!validPosition(x,y)) return false;
     //check collision
-    for(vector<Point*>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if((*i)->getX()==x || (*i)->getY()==y) return false;
+    struct GameChar &realReq = objPool[0];
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(i->ref == (Point*)req) realReq = *i;
+        if(getRealX(*i)==x || getRealY(*i)==y) return false;
     }
-    req.setX(x);
-    req.setY(y);
+    realReq.x = x;
+    realReq.y = y;
+
+    //req.setX(x);
+    //req.setY(y);
     return true;
 }
+const type_info* Game::whosThere(int x, int y){
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(getRealX(*i)==x || getRealY(*i)==y) return i->type;
+    }
+    return &typeid(void);
+}
+
 char Game::getUserKey(){
     return userKey;
 }

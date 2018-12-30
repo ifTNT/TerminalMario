@@ -2,7 +2,7 @@
 
 class scoreLifeExample:public Point{
     public:
-        scoreLifeExample(int,int,Game&);
+        scoreLifeExample(Game&);
         virtual void update();
     private:
         int counter;

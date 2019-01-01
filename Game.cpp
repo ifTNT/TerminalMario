@@ -106,13 +106,13 @@ void Game::start(){
 bool Game::moveTo(void* req, int x, int y){
     if(!validPosition(x,y)) return false;
     //check collision
-    struct GameChar &realReq = objPool[0];
+    struct GameChar* realReq;
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == (Point*)req) realReq = *i;
-        if(getRealX(*i)==x || getRealY(*i)==y) return false;
+        if(i->ref == (Point*)req) realReq = &(*i);
+        if(getRealX(*i)==x && getRealY(*i)==y) return false;
     }
-    realReq.x = x;
-    realReq.y = y;
+    realReq->x = x;
+    realReq->y = y;
 
     //req.setX(x);
     //req.setY(y);
@@ -120,7 +120,7 @@ bool Game::moveTo(void* req, int x, int y){
 }
 const type_info* Game::whosThere(int x, int y){
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(getRealX(*i)==x || getRealY(*i)==y) return i->type;
+        if(getRealX(*i)==x && getRealY(*i)==y) return i->type;
     }
     return &typeid(void);
 }
@@ -144,5 +144,12 @@ int Game::getLife(){
 }
 void Game::endGame(){
     endFlag = true;
+}
+bool Game::reachBottom(void* req){
+    struct GameChar* realReq;
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(i->ref == (Point*)req) realReq = &(*i);
+    }
+    return (getRealY(*realReq)>=height-2);
 }
 //====End API====

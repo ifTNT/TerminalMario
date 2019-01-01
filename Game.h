@@ -31,6 +31,7 @@ class Game{
         int getLife();
         void endGame();
         static char getUserKey();
+        bool reachBottom(void*);
         void start();
     private:
         vector<GameChar> objPool;

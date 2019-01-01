@@ -1,6 +1,7 @@
 #include "../Game.h"
 #include "keyLogger.h"
 #include "scoreLifeExample.h"
+#include "barrier.h"
 using namespace std;
 
 int main(){
@@ -11,6 +12,9 @@ int main(){
     
     //A dummy object in position (0,0)
     newGame.create<scoreLifeExample>(0,0);
+
+    //Fallen barrier in position(40,10)
+    newGame.create<barrier>(40,10);
 
     //Start the game(block until game end)
     newGame.start();

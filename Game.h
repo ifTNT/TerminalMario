@@ -33,6 +33,9 @@ class Game{
         static char getUserKey();
         bool reachBottom(void*);
         void start();
+        int getWidth();
+        int getHeight();
+        int getFrameCount();
     private:
         vector<GameChar> objPool;
         int score;
@@ -49,12 +52,13 @@ class Game{
         int getRealX(GameChar);
         int getRealY(GameChar);
         FBuffer* fb;
+        unsigned long long int _frameCnt;
 
 };
 
 //Must place here to avoid linking error
 template<class T> bool Game::create(int x, int y){
-    if(!validPosition(x,y)) return false;
+    //if(!validPosition(x,y)) return false;
     T* newObj = new T(*this);
     struct GameChar newGameChar={
         (Point*)newObj,

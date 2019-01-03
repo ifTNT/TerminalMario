@@ -7,7 +7,7 @@ barrier::barrier(Game& _f):Point(_f){
 
 void barrier::update(){
     if(!api.reachBottom(this)){
-        offsetY++;
+        offsetY--;
         api.moveTo(this, 0, offsetY);
     }
 }

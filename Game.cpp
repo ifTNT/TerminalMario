@@ -27,6 +27,7 @@ Game::Game() {
     life = 5;
     width = 80;
     height = 20;
+    _frameCnt = 0;
     fb = new FBuffer(width+2,height+3);
 }
 
@@ -50,7 +51,7 @@ int Game::offsetX(int x){
     return x+1;
 }
 int Game::offsetY(int y){
-    return y+2;
+    return height-1-y+2;
 }
 int Game::getRealX(GameChar t){
     return t.originX+t.x;
@@ -64,20 +65,22 @@ void Game::start(){
     thread th(readUserKey);
     
     while(endFlag==0){
+        _frameCnt++;
         this_thread::sleep_for(chrono::milliseconds(33));
         //======begin Tick======
         fb->clear();
         //draw the scene
-        fb->drawLine(0,height+1,width+1,height+1, "█");
+        fb->drawLine(0,height+2,width+1,height+2, "█");
         fb->drawLine(0,0,width+1,0, "█");
-        fb->drawLine(0,0,0,height+1, "█");
-        fb->drawLine(width+1,0,width+1,height+1, "█");
+        fb->drawLine(0,0,0,height+2, "█");
+        fb->drawLine(width+1,0,width+1,height+2, "█");
         //refresh
         for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
             i->ref->update();
         }
         //redraw
         for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            if(!validPosition(getRealX(*i), getRealY(*i)));
             int _x=offsetX(getRealX(*i));
             int _y=offsetY(getRealY(*i));
             if(i->ref->getContent()!="") fb->setPoint(_x,_y,i->ref->getContent());
@@ -96,6 +99,9 @@ void Game::start(){
 
         if(userKey!=(char)0) userKey=0;
         fb->flush();
+#ifdef DEBUG
+        cout << "Frame " << _frameCnt << endl;
+#endif
         //======End Tick========
     }
     cout << "Press any key to end the game." << endl;
@@ -104,13 +110,13 @@ void Game::start(){
 
 //====Begin API====
 bool Game::moveTo(void* req, int x, int y){
-    if(!validPosition(x,y)) return false;
     //check collision
     struct GameChar* realReq;
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
         if(i->ref == (Point*)req) realReq = &(*i);
         if(getRealX(*i)==x && getRealY(*i)==y) return false;
     }
+    if(!validPosition(realReq->originX+x,realReq->originY+y)) return false;
     realReq->x = x;
     realReq->y = y;
 
@@ -150,6 +156,15 @@ bool Game::reachBottom(void* req){
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
         if(i->ref == (Point*)req) realReq = &(*i);
     }
-    return (getRealY(*realReq)>=height-2);
+    return (getRealY(*realReq)<=0);
+}
+int Game::getWidth(){
+    return width;
+}
+int Game::getHeight(){
+    return height;
+}
+int Game::getFrameCount(){
+    return _frameCnt;
 }
 //====End API====

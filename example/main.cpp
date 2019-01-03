@@ -11,7 +11,7 @@ int main(){
     newGame.create<keyLogger>(10,10);
     
     //A dummy object in position (0,0)
-    newGame.create<scoreLifeExample>(0,0);
+    newGame.create<scoreLifeExample>(10000,10000);
 
     //Fallen barrier in position(40,10)
     newGame.create<barrier>(40,10);

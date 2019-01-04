@@ -2,6 +2,11 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#ifdef __linux__
+    #include <curses.h>
+#elif _WIN32
+    #include <ncursesw/curses.h>
+#endif
 using namespace std;
 
 FBuffer::FBuffer(int w, int h){
@@ -14,6 +19,10 @@ FBuffer::FBuffer(int w, int h){
             _fb[i][j] = new string();
         }
     }
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
     clear();
     flush();
 }
@@ -25,6 +34,7 @@ FBuffer::~FBuffer(){
         delete(_fb[i]);
     }
     delete(_fb);
+    endwin();
 }
 bool FBuffer::_inBoundary(int x, int y){
     if(x<0 || x>=width) return false;
@@ -41,13 +51,13 @@ void FBuffer::clear(){
 
 void FBuffer::flush(){
     //if (system("CLS")) system("clear");
-    cout << string( 100, '\n' );
+    //cout << string( 100, '\n' );
     for(int i=0; i<height; i++){
         for(int j=0; j<width; j++){
-            cout << *(_fb[i][j]);
+            mvaddch(i,j,(_fb[i][j])->c_str()[0]);
         }
-        cout << endl;
     }
+    refresh();
 }
 
 void FBuffer::setPoint(int x, int y, char content){

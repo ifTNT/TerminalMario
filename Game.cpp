@@ -8,13 +8,20 @@
 #include <string>
 #include <typeinfo>
 
+#ifdef __linux__
+    #include <curses.h>
+#elif _WIN32
+    #include <ncursesw/curses.h>
+#endif
+
+/*
 #ifdef __linux__ 
     #include "linuxGetchPatch.h"
 #elif _WIN32
     #include <conio.h>
 #else
 #endif
-
+*/
 using namespace std;
 
 char Game::userKey;

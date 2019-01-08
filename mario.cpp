@@ -1,6 +1,6 @@
 #include<iostream>
 #include "Mario.h"
-//#include "Monster.h"
+#include "Monster.h"
 using namespace std;
 
 
@@ -18,6 +18,13 @@ void Mario::update() {
 	}
 	switch (api.getUserKey())
 	{
+	case'\0':
+		if (api.whosThere(this, Mx + 1, My) == &typeid(Monster)) {
+			Mx = Mx - 3;
+		}
+		else if (api.whosThere(this, Mx + 1, My) == &typeid(Monster)) {
+			Mx = Mx + 3;
+		}
 	case'w':
 		for (double i = My;i <= My + v;i += 1) {
 			if (api.moveTo(this, Mx, i) == false) break;
@@ -34,7 +41,7 @@ void Mario::update() {
 				api.endGame();
 			}
 			api.setLife(api.getLife() - 1);
-			Mx = Mx - 2;
+			Mx = Mx + 3;
 		}
 		break;
 	case'd':
@@ -44,7 +51,7 @@ void Mario::update() {
 				api.endGame();
 			}
 			api.setLife(api.getLife() - 1);
-			Mx = Mx + 2;
+			Mx = Mx - 3;
 		}
 	}
 	if (api.moveTo(this, (int)Mx, (int)My) == false) {

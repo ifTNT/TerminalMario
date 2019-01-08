@@ -193,11 +193,13 @@ int Game::getAbsY(void* req){
     return getRealY(*realReq);
 }
 void Game::Delete(void* req){
-    for(vector<GameChar*>::iterator i=_objPool.begin(); i<_objPool.end(); i++){
+    for(vector<GameChar*>::iterator i=_objPool.begin(); i<_objPool.end();){
         if((*i)->ref == ((Point*)req)){
-            delete((*i)->ref);
-            _objPool.erase(i);
+            //delete((*i)->ref);
+            i = _objPool.erase(i);
             break;
+        }else{
+            i++;
         }
     }
 }

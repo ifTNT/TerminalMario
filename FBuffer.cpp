@@ -82,3 +82,12 @@ void FBuffer::drawLine(int x0, int y0, int x1, int y1, string content){
         }
     }
 }
+void FBuffer::drawNumber(int x, int y, int content){
+    if(content<0 || content>9) return;
+    for(int i=0; i<7; i++){
+        for(int j=0; j<5; j++){
+            setPoint(x+j, y+i,numFont[content][i][j]);
+        }
+    }
+    return;
+}

@@ -80,6 +80,20 @@ void Game::start(){
         objPool.assign(_objPool.begin(),_objPool.end());
         //======begin Tick======
         fb->clear();
+        if(endFlag!=0){
+            string scoreStr = "SCORE";
+            for(int i=0; i<scoreStr.length(); i++){
+                fb->setPoint((width-scoreStr.length())/2+i, 6, scoreStr[i]);
+            }
+            int _score = score;
+            for(int i=0; i<4; i++){
+                fb->drawNumber(width/2-(i-1)*8, 8, _score%10);
+                _score /= 10;
+            }
+            /*for(int i=0; i<10; i++){
+                fb->drawNumber(2+8*i,8,i);
+            }*/
+        }
         //draw the scene
         fb->drawLine(0,height+2,width+1,height+2, "█");
         fb->drawLine(0,0,width+1,0, "█");
@@ -127,7 +141,7 @@ void Game::start(){
         string gameover = "GAME OVER";
         if(endFlag>=1 && endFlag<=gameover.length()){
             if(endFlag==1) _objPool.clear();
-            create<EndChar>(10+endFlag*4,10);
+            create<EndChar>(10+endFlag*4,5);
             _objPool[endFlag-1]->ref->setContent(string(1,gameover[endFlag-1]));
             endFlag++;
         }

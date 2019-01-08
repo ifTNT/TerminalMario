@@ -107,6 +107,16 @@ void Game::start(){
             _score /= 10;
         }
 
+        //redraw rest time
+        int _second = (3000-_frameCnt)/30;
+        for(int i=0; i<3; i++){
+            fb->setPoint(offsetX(width/2-i), 1, '0'+_second%10);
+            _second /= 10;
+        }
+        if(_frameCnt>=3000){
+            endGame();
+        }
+
         if(userKey!=(char)0) userKey=0;
         fb->flush();
 #ifdef DEBUG

@@ -7,6 +7,7 @@
 #include <chrono>
 #include <string>
 #include <typeinfo>
+#include "EndChar.h"
 
 #ifdef __linux__
     #include <curses.h>
@@ -71,7 +72,7 @@ void Game::start(){
     //new thread to record user key input
     thread th(readUserKey);
     
-    while(endFlag==0){
+    while(true){
         _frameCnt++;
         this_thread::sleep_for(chrono::milliseconds(33));
 
@@ -95,34 +96,41 @@ void Game::start(){
             int _y=offsetY(getRealY(**i));
             if((*i)->ref->getContent()!="") fb->setPoint(_x,_y,(*i)->ref->getContent());
         }
+        if(endFlag==0){
+            //redraw life
+            for(int i=1; i<=getLife(); i++){
+                fb->setPoint(offsetX(i-1), 1, "*");
+            }
+            //redraw score
+            int _score = score;
+            for(int i=0; i<4; i++){
+                fb->setPoint(offsetX(width-1-i), 1, '0'+_score%10);
+                _score /= 10;
+            }
 
-        //redraw life
-        for(int i=1; i<=getLife(); i++){
-            fb->setPoint(offsetX(i-1), 1, "*");
+            //redraw rest time
+            int _second = (3000-_frameCnt)/30;
+            for(int i=0; i<3; i++){
+                fb->setPoint(offsetX(width/2-i), 1, '0'+_second%10);
+                _second /= 10;
+            }
+            if(_frameCnt>=3000){
+                endGame();
+            }
         }
-        //redraw score
-        int _score = score;
-        for(int i=0; i<4; i++){
-            fb->setPoint(offsetX(width-1-i), 1, '0'+_score%10);
-            _score /= 10;
-        }
-
-        //redraw rest time
-        int _second = (3000-_frameCnt)/30;
-        for(int i=0; i<3; i++){
-            fb->setPoint(offsetX(width/2-i), 1, '0'+_second%10);
-            _second /= 10;
-        }
-        if(_frameCnt>=3000){
-            endGame();
-        }
-
         if(userKey!=(char)0) userKey=0;
         fb->flush();
 #ifdef DEBUG
         cout << "Frame " << _frameCnt << endl;
 #endif
         //======End Tick========
+        string gameover = "GAME OVER";
+        if(endFlag>=1 && endFlag<=gameover.length()){
+            if(endFlag==1) _objPool.clear();
+            create<EndChar>(10+endFlag*4,10);
+            _objPool[endFlag-1]->ref->setContent(string(1,gameover[endFlag-1]));
+            endFlag++;
+        }
     }
     cout << "Press any key to end the game." << endl;
     th.join();

@@ -36,6 +36,8 @@ class Game{
         int getWidth();
         int getHeight();
         int getFrameCount();
+        int getAbsX(void*);
+        int getAbsY(void*);
         //void delete(void*);
     private:
         vector<GameChar> objPool;
@@ -52,6 +54,7 @@ class Game{
         int offsetY(int);
         int getRealX(GameChar);
         int getRealY(GameChar);
+        struct GameChar* getRealReq(Point*);
         FBuffer* fb;
         unsigned long long int _frameCnt;
 

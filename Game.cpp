@@ -115,13 +115,20 @@ void Game::start(){
     th.join();
 }
 
+struct GameChar* Game::getRealReq(Point* req){
+    struct GameChar* realReq;
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(i->ref == req) realReq = &(*i);
+    }
+    return realReq;
+}
+
 //====Begin API====
 bool Game::moveTo(void* req, int x, int y){
     //check collision
-    struct GameChar* realReq;
+    struct GameChar* realReq=getRealReq((Point*)req);
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == (Point*)req) realReq = &(*i);
-        if(getRealX(*i)==x && getRealY(*i)==y) return false;
+        if(getRealX(*i)==realReq->originX+x && getRealY(*i)==realReq->originY+y) return false;
     }
     if(!validPosition(realReq->originX+x,realReq->originY+y)) return false;
     realReq->x = x;
@@ -132,10 +139,7 @@ bool Game::moveTo(void* req, int x, int y){
     return true;
 }
 const type_info* Game::whosThere(void * cola,int x, int y){
-    struct GameChar* realReq;
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == (Point*)cola) realReq = &(*i);
-    }
+    struct GameChar* realReq=getRealReq((Point*)cola);
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
         if(getRealX(*i)==realReq->originX+x && getRealY(*i)==realReq->originY+y) return i->type;
     }
@@ -163,10 +167,7 @@ void Game::endGame(){
     endFlag = true;
 }
 bool Game::reachBottom(void* req){
-    struct GameChar* realReq;
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == (Point*)req) realReq = &(*i);
-    }
+    struct GameChar* realReq=getRealReq((Point*)req);
     return (getRealY(*realReq)<=0);
 }
 int Game::getWidth(){
@@ -177,5 +178,13 @@ int Game::getHeight(){
 }
 int Game::getFrameCount(){
     return _frameCnt;
+}
+int Game::getAbsX(void* req){
+    struct GameChar* realReq=getRealReq((Point*)req);
+    return getRealX(*realReq);
+}
+int Game::getAbsY(void* req){
+    struct GameChar* realReq=getRealReq((Point*)req);
+    return getRealY(*realReq);
 }
 //====End API====

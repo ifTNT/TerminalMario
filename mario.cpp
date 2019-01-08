@@ -11,6 +11,8 @@ Mario::Mario(Game& api) :Point(api) {
 }
 
 void Mario::update() {
+	Lastx = Mx;
+	Lasty = My;
 	if (api.reachBottom(this) != true) {
 		My = My - g;
 	}
@@ -19,7 +21,7 @@ void Mario::update() {
 	{
 	case'w':
 		My = My + v;
-		if (api.reachBottom(this) != true && api.moveTo(this, Mx, My) != false) {
+		if (api.reachBottom(this) != true) {
 			My = My - g;
 		}
 		break;
@@ -43,5 +45,10 @@ void Mario::update() {
 			Mx = Mx + 2;
 		}
 	}
-	api.moveTo(this, (int)Mx, (int)My);
+	if (api.moveTo(this, (int)Mx, (int)My) == false) {
+		api.moveTo(this, (int)Lastx, (int)Lasty);
+	}
+	else {
+		api.moveTo(this, (int)Mx, (int)My);
+	}
 }

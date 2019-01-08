@@ -12,6 +12,8 @@ public:
 private:
 	double Mx;
 	double My;
+	double Lastx;
+	double Lasty;
 	const double v = 4;
 	const double g = 0.2;
 };

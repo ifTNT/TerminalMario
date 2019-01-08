@@ -23,7 +23,7 @@ class Game{
         Game();
         ~Game();
         bool moveTo(void*,int,int);
-        const type_info* whosThere(int,int);
+        const type_info* whosThere(void*,int,int);
         template <class T> bool create(int, int);
         void setScore(int);
         int getScore();
@@ -36,6 +36,7 @@ class Game{
         int getWidth();
         int getHeight();
         int getFrameCount();
+        //void delete(void*);
     private:
         vector<GameChar> objPool;
         int score;

@@ -131,9 +131,13 @@ bool Game::moveTo(void* req, int x, int y){
     //req.setY(y);
     return true;
 }
-const type_info* Game::whosThere(int x, int y){
+const type_info* Game::whosThere(void * cola,int x, int y){
+    struct GameChar* realReq;
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(getRealX(*i)==x && getRealY(*i)==y) return i->type;
+        if(i->ref == (Point*)cola) realReq = &(*i);
+    }
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(getRealX(*i)==realReq->originX+x && getRealY(*i)==realReq->originY+y) return i->type;
     }
     return &typeid(void);
 }

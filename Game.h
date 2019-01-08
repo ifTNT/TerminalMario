@@ -38,7 +38,7 @@ class Game{
         int getFrameCount();
         int getAbsX(void*);
         int getAbsY(void*);
-        //void delete(void*);
+        void Delete(void*);
     private:
         vector<GameChar> objPool;
         int score;

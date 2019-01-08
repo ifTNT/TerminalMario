@@ -128,7 +128,9 @@ bool Game::moveTo(void* req, int x, int y){
     //check collision
     struct GameChar* realReq=getRealReq((Point*)req);
     for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(getRealX(*i)==realReq->originX+x && getRealY(*i)==realReq->originY+y) return false;
+        if(&(*i)!=realReq &&
+           getRealX(*i)==realReq->originX+x &&
+           getRealY(*i)==realReq->originY+y) return false;
     }
     if(!validPosition(realReq->originX+x,realReq->originY+y)) return false;
     realReq->x = x;
@@ -186,5 +188,14 @@ int Game::getAbsX(void* req){
 int Game::getAbsY(void* req){
     struct GameChar* realReq=getRealReq((Point*)req);
     return getRealY(*realReq);
+}
+void Game::Delete(void* req){
+    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(i->ref == ((Point*)req)){
+            delete(i->ref);
+            objPool.erase(i);
+            break;
+        }
+    }
 }
 //====End API====

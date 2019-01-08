@@ -16,11 +16,13 @@ void Mario::update() {
 	if (api.reachBottom(this) != true) {
 		My = My - g;
 	}
-	//My = 0;
 	switch (api.getUserKey())
 	{
 	case'w':
-		My = My + v;
+		for (double i = My;i <= My + v;i += 1) {
+			if (api.moveTo(this, Mx, i) == false) break;
+			My = i;
+		}
 		if (api.reachBottom(this) != true) {
 			My = My - g;
 		}
@@ -47,6 +49,8 @@ void Mario::update() {
 	}
 	if (api.moveTo(this, (int)Mx, (int)My) == false) {
 		api.moveTo(this, (int)Lastx, (int)Lasty);
+		Mx = Lastx;
+		My = Lasty;
 	}
 	else {
 		api.moveTo(this, (int)Mx, (int)My);

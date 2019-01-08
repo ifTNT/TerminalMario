@@ -74,6 +74,9 @@ void Game::start(){
     while(endFlag==0){
         _frameCnt++;
         this_thread::sleep_for(chrono::milliseconds(33));
+
+        //Copy new objPool
+        objPool.assign(_objPool.begin(),_objPool.end());
         //======begin Tick======
         fb->clear();
         //draw the scene
@@ -82,15 +85,15 @@ void Game::start(){
         fb->drawLine(0,0,0,height+2, "█");
         fb->drawLine(width+1,0,width+1,height+2, "█");
         //refresh
-        for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            i->ref->update();
+        for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            (*i)->ref->update();
         }
         //redraw
-        for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-            if(!validPosition(getRealX(*i), getRealY(*i)));
-            int _x=offsetX(getRealX(*i));
-            int _y=offsetY(getRealY(*i));
-            if(i->ref->getContent()!="") fb->setPoint(_x,_y,i->ref->getContent());
+        for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+            if(!validPosition(getRealX(**i), getRealY(**i)));
+            int _x=offsetX(getRealX(**i));
+            int _y=offsetY(getRealY(**i));
+            if((*i)->ref->getContent()!="") fb->setPoint(_x,_y,(*i)->ref->getContent());
         }
 
         //redraw life
@@ -117,8 +120,8 @@ void Game::start(){
 
 struct GameChar* Game::getRealReq(Point* req){
     struct GameChar* realReq;
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == req) realReq = &(*i);
+    for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if((*i)->ref == req) realReq = (*i);
     }
     return realReq;
 }
@@ -127,10 +130,10 @@ struct GameChar* Game::getRealReq(Point* req){
 bool Game::moveTo(void* req, int x, int y){
     //check collision
     struct GameChar* realReq=getRealReq((Point*)req);
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(&(*i)!=realReq &&
-           getRealX(*i)==realReq->originX+x &&
-           getRealY(*i)==realReq->originY+y) return false;
+    for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if((*i)!=realReq &&
+           getRealX(**i)==realReq->originX+x &&
+           getRealY(**i)==realReq->originY+y) return false;
     }
     if(!validPosition(realReq->originX+x,realReq->originY+y)) return false;
     realReq->x = x;
@@ -142,8 +145,8 @@ bool Game::moveTo(void* req, int x, int y){
 }
 const type_info* Game::whosThere(void * cola,int x, int y){
     struct GameChar* realReq=getRealReq((Point*)cola);
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(getRealX(*i)==realReq->originX+x && getRealY(*i)==realReq->originY+y) return i->type;
+    for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
+        if(getRealX(**i)==realReq->originX+x && getRealY(**i)==realReq->originY+y) return (*i)->type;
     }
     return &typeid(void);
 }
@@ -190,10 +193,10 @@ int Game::getAbsY(void* req){
     return getRealY(*realReq);
 }
 void Game::Delete(void* req){
-    for(vector<GameChar>::iterator i=objPool.begin(); i<objPool.end(); i++){
-        if(i->ref == ((Point*)req)){
-            delete(i->ref);
-            objPool.erase(i);
+    for(vector<GameChar*>::iterator i=_objPool.begin(); i<_objPool.end(); i++){
+        if((*i)->ref == ((Point*)req)){
+            delete((*i)->ref);
+            _objPool.erase(i);
             break;
         }
     }

@@ -40,7 +40,8 @@ class Game{
         int getAbsY(void*);
         void Delete(void*);
     private:
-        vector<GameChar> objPool;
+        vector<GameChar*> objPool;
+        vector<GameChar*> _objPool;
         int score;
         int life;
         int width;
@@ -64,15 +65,15 @@ class Game{
 template<class T> bool Game::create(int x, int y){
     //if(!validPosition(x,y)) return false;
     T* newObj = new T(*this);
-    struct GameChar newGameChar={
+    struct GameChar* newGameChar= new GameChar{
         (Point*)newObj,
         &typeid(T)
     };
-    newGameChar.originX = x;
-    newGameChar.originY = y;
-    newGameChar.x = 0;
-    newGameChar.y = 0;
-    objPool.push_back(newGameChar);
+    newGameChar->originX = x;
+    newGameChar->originY = y;
+    newGameChar->x = 0;
+    newGameChar->y = 0;
+    _objPool.push_back(newGameChar);
     return true;
 }
 

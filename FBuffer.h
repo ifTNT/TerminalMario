@@ -10,9 +10,6 @@ class FBuffer{
         int getWidth();
         int getHeight();
         void setPoint(int, int, wchar_t);
-        //void setPoint(int, int, wstring);
-        void getPoint(int, int);
-        void clearPoint(int, int);
         void drawRect(int, int, int, int, wchar_t);
         void drawLine(int, int, int, int, wchar_t);
         void drawNumber(int,int,int);
@@ -21,7 +18,6 @@ class FBuffer{
     private:
         int width;
         int height;
-        wstring** _fb;
         bool _inBoundary(int, int);
         const wchar_t numFont[10][7][5]={
             {

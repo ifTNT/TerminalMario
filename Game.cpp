@@ -81,7 +81,6 @@ void Game::start(){
         objPool.assign(_objPool.begin(),_objPool.end());
         //======begin Tick======
         clear();
-        //fb->clear();
         if(endFlag!=0){
             string scoreStr = "SCORE";
             for(int i=0; i<scoreStr.length(); i++){

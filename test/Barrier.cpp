@@ -2,7 +2,7 @@
 
 Barrier::Barrier(Game& _f):Point(_f){
     offsetY=0;
-    setContent("█");
+    setContent(L'█');
 }
 
 void Barrier::update(){

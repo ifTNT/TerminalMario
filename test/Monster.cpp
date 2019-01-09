@@ -8,14 +8,14 @@ Monster::Monster(Game&_f) :Point(_f) {
     srand(time(NULL)); 
     mx = 0; 
     my = 0; 
-    setContent("&"); 
+    setContent(L'&'); 
     flag = rand() % 2;
     value=0;
 } 
 void Monster::update() { 
     if(value==0){
         value = (rand()%9)+1;
-        setContent(string(1,'0'+value));
+        setContent(L'0'+value);
     }
     if (!api.reachBottom(this)) { 
         my -= 0.35; 

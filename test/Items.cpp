@@ -4,7 +4,7 @@
 
 using namespace std; 
 Items::Items(Game&_f):Point(_f){ 
-    setContent("+"); 
+    setContent(L'+'); 
 } 
 void Items::update(){ 
     if(api.whosThere(this,0,1)==&typeid(Mario)){ 

@@ -8,6 +8,7 @@
 #include <string>
 #include <typeinfo>
 #include "EndChar.h"
+#include <cstring>
 
 #ifdef __linux__
     #include <curses.h>
@@ -79,15 +80,16 @@ void Game::start(){
         //Copy new objPool
         objPool.assign(_objPool.begin(),_objPool.end());
         //======begin Tick======
-        fb->clear();
+        clear();
+        //fb->clear();
         if(endFlag!=0){
             string scoreStr = "SCORE";
             for(int i=0; i<scoreStr.length(); i++){
-                fb->setPoint((width-scoreStr.length())/2+i, 6, scoreStr[i]);
+                fb->setPoint((width-scoreStr.length())/2+i+1, 6, scoreStr[i]);
             }
             int _score = score;
             for(int i=0; i<4; i++){
-                fb->drawNumber(width/2-(i-1)*8, 8, _score%10);
+                fb->drawNumber(width/2-(i-1)*8+2, 8, _score%10);
                 _score /= 10;
             }
             /*for(int i=0; i<10; i++){
@@ -95,10 +97,10 @@ void Game::start(){
             }*/
         }
         //draw the scene
-        fb->drawLine(0,height+2,width+1,height+2, "█");
-        fb->drawLine(0,0,width+1,0, "█");
-        fb->drawLine(0,0,0,height+2, "█");
-        fb->drawLine(width+1,0,width+1,height+2, "█");
+        fb->drawLine(0,height+2,width+1,height+2, L'█');
+        fb->drawLine(0,0,width+1,0, L'█');
+        fb->drawLine(0,0,0,height+2, L'█');
+        fb->drawLine(width+1,0,width+1,height+2, L'█');
         //refresh
         for(vector<GameChar*>::iterator i=objPool.begin(); i<objPool.end(); i++){
             (*i)->ref->update();
@@ -108,12 +110,12 @@ void Game::start(){
             if(!validPosition(getRealX(**i), getRealY(**i)));
             int _x=offsetX(getRealX(**i));
             int _y=offsetY(getRealY(**i));
-            if((*i)->ref->getContent()!="") fb->setPoint(_x,_y,(*i)->ref->getContent());
+            if((*i)->ref->getContent()!=L'\0') fb->setPoint(_x,_y,(*i)->ref->getContent());
         }
         if(endFlag==0){
             //redraw life
             for(int i=1; i<=getLife(); i++){
-                fb->setPoint(offsetX(i-1), 1, "*");
+                fb->setPoint(offsetX(i-1), 1, L'웃');
             }
             //redraw score
             int _score = score;
@@ -138,11 +140,11 @@ void Game::start(){
         cout << "Frame " << _frameCnt << endl;
 #endif
         //======End Tick========
-        string gameover = "GAME OVER";
-        if(endFlag>=1 && endFlag<=gameover.length()){
+        const wchar_t* gameover = L"GAME OVER";
+        if(endFlag>=1 && endFlag<=wcslen(gameover)){
             if(endFlag==1) _objPool.clear();
             create<EndChar>(10+endFlag*4,5);
-            _objPool[endFlag-1]->ref->setContent(string(1,gameover[endFlag-1]));
+            _objPool[endFlag-1]->ref->setContent(gameover[endFlag-1]);
             endFlag++;
         }
     }

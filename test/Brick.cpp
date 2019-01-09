@@ -6,7 +6,7 @@
 #include <stdlib.h>
 using namespace std; 
 Brick::Brick(Game&_f):Point(_f){ 
-    setContent("▉");
+    setContent(L'█');
     srand(time(NULL)); 
     used = false;
 } 

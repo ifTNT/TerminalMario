@@ -7,7 +7,7 @@ using namespace std;
 Mario::Mario(Game& api) :Point(api) {
 	Mx = 0;
 	My = 0;
-	setContent("@");
+	setContent(L'\uC6C3');
 }
 
 void Mario::update() {
